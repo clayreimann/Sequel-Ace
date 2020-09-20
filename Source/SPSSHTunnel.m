@@ -304,6 +304,10 @@ static unsigned short getRandomPort();
 		}
 
 		// Set up the NSTask
+		// We also need to setup a local socket we can read
+		// That socket will be used as SSH_AUTH_SOCK and will act as a proxy to an XPC service
+		// The XPC service will in-turn proxy the messages to a user-specified SSH_AUTH_SOCK
+		// This double proxy is necessary because we can't read the user's SSH_AUTH_SOCK from inside the sandbox
 		task = [[NSTask alloc] init];
 		NSString *launchPath = @"/usr/bin/ssh";
 		NSString *userSSHPath = [[NSUserDefaults standardUserDefaults] stringForKey:SPSSHClientPath];
